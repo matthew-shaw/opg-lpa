@@ -28,6 +28,7 @@ class Service extends AbstractService
         'Registered' => Lpa::SIRIUS_PROCESSING_STATUS_RETURNED,
         'Cancelled' => Lpa::SIRIUS_PROCESSING_STATUS_RETURNED,
         'Revoked' => Lpa::SIRIUS_PROCESSING_STATUS_RETURNED,
+        'Return - unpaid' => Lpa::SIRIUS_PROCESSING_STATUS_RETURNED,
     ];
 
     /**
