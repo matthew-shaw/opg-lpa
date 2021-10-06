@@ -27,6 +27,26 @@ reset:
 	@${MAKE} dc-build-clean
 	@${MAKE} dc-run
 
+.PHONY: run-front-composer
+run-front-composer:
+	@docker run -v `pwd`/service-front/:/app/ composer install --prefer-dist --no-interaction --no-scripts --ignore-platform-reqs
+
+.PHONY: run-pdf-composer
+run-pdf-composer:
+	@docker run -v `pwd`/service-pdf/:/app/ composer install --prefer-dist --no-interaction --no-scripts --ignore-platform-reqs
+
+.PHONY: run-api-composer
+run-api-composer:
+	@docker run -v `pwd`/service-api/:/app/ composer install --prefer-dist --no-interaction --no-scripts --ignore-platform-reqs
+
+.PHONY: run-admin-composer
+run-admin-composer:
+	@docker run -v `pwd`/service-admin/:/app/ composer install --prefer-dist --no-interaction --no-scripts --ignore-platform-reqs
+
+.PHONY: run-composers
+run-composers:
+	@make -j run-front-composer run-pdf-composer run-api-composer run-admin-composer
+
 .PHONY: dc-run
 dc-run:
 	@export OPG_LPA_FRONT_EMAIL_SENDGRID_API_KEY=${SENDGRID}; \
@@ -62,7 +82,7 @@ dc-run:
 # lambda (running as a docker container).
 # The name of the network created here must match the one in the docker-compose.yml.
 .PHONY: dc-up
-dc-up:
+dc-up: run-composers
 	@export OPG_LPA_FRONT_EMAIL_SENDGRID_API_KEY=${SENDGRID}; \
 	export OPG_LPA_FRONT_GOV_PAY_KEY=${GOVPAY}; \
 	export OPG_LPA_API_NOTIFY_API_KEY=${NOTIFY}; \
@@ -73,7 +93,7 @@ dc-up:
 
 # target for users outside MoJ to run the stack without 3rd party integrations
 .PHONY: dc-up-out
-dc-up-out:
+dc-up-out: run-composers
 	@${MAKE} dc-up SENDGRID=- GOVPAY=- NOTIFY=- ORDNANCESURVEY=-
 
 .PHONY: dc-build
